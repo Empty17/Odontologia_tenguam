@@ -12,18 +12,29 @@
   </header>
 
   <section class="content">
-    <form action="/autenticar" method="post">
-      <label for="usuario">CPF:</label><br>
-      <input type="text" id="CPF" name="CPF" required><br><br>
+    <!-- Verifica se há um erro e, se sim, dispara o alert -->
+    <div th:if="${erro}" th:text="${erro}" style="color: red;"></div>
 
+    <form th:action="@{/autenticar}" method="post">
+    
+      <label for="CPF">CPF:</label><br>
+      <input type="text" id="CPF" th:name="CPF" required><br><br>
+    
       <label for="senha">Senha:</label><br>
-      <input type="password" id="senha" name="senha" required><br><br>
+      <input type="password" id="senha" th:name="senha" required><br><br>
+    
       <button type="submit">Entrar</button>
     </form>
-    <a href="\cadastroUsuario" class="esqueci-senha">Esqueci a senha</a>  </section>
+    
+    <a href="/cadastroUsuario" class="Cadastrar-se">Cadastrar-se</a>  
+    <br><br>
+    <a href="/esqueciSenha" class="esqueci a senha">Esqueci a Senha</a>  
+
+  </section>
 
   <footer>
     <p>Clínica Tenguam © 2025</p>
   </footer>
+
 </body>
 </html>
