@@ -1,11 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Perfil - Clínica Tenguam</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil do Usuário</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Bem-vindo à sua área do paciente!</h1>
-  <p>Login realizado com sucesso.</p>
+
+<header>
+  <h1>Perfil do Usuário</h1>
+</header>
+
+<div class="container">
+  <div class="perfil-info">
+    <h2>Bem-vindo, <span th:text="${usuario.nome}">Nome do Usuário</span></h2>
+    <p><strong>CPF:</strong> <span th:text="${usuario.cpf}">000.000.000-00</span></p>
+    <p><strong>E-mail:</strong> <span th:text="${usuario.email}">usuario@email.com</span></p>
+    <p><strong>Telefone:</strong> <span th:text="${usuario.telefone}">(00) 00000-0000</span></p>
+
+  </div>
+</div>
+
 </body>
 </html>

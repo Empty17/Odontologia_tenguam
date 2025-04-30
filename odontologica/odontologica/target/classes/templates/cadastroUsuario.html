@@ -12,9 +12,10 @@
   </header>
 
   <section class="content">
-    <form action="/cadastrar" method="post">
+    <form id="cadastroForm" action="/cadastrar" method="post">
       <label for="cpf">CPF:</label><br>
-      <input type="text" id="cpf" name="cpf" maxlength="11" required><br><br>
+      <input type="text" id="cpf" name="cpf" maxlength="14" required><br><br>
+      <div id="mensagem"></div><br>
 
       <label for="nome">Nome:</label><br>
       <input type="text" id="nome" name="nome" required><br><br>
@@ -32,7 +33,7 @@
       <input type="date" id="dataNascimento" name="dataNascimento" required><br><br>
 
       <label for="telefone">Telefone:</label><br>
-      <input type="text" id="telefone" name="telefone" required><br><br>
+      <input type="text" id="telefone" name="telefone" required maxlength="15"><br><br>
 
       <button type="submit">Cadastrar</button>
     </form>
@@ -41,5 +42,64 @@
   <footer>
     <p>Clínica Tenguam © 2025</p>
   </footer>
+
+  <script>
+    // Função para formatar o CPF e verificar se ele tem 11 números (ou 10 números e X no final)
+    const cpfField = document.querySelector('#cpf');
+    const message = document.querySelector('#mensagem'); // seu elemento de feedback
+
+    cpfField.addEventListener('input', () => {
+      let v = cpfField.value.toUpperCase().replace(/[^0-9X]/g, '');
+
+      // Se tiver X, garanta que só fique na última posição
+      if (v.slice(0, -1).includes('X')) {
+        v = v.replace(/X/g, ''); // remove Xs “erradas”
+      }
+
+      // Limita a 11 caracteres
+      v = v.slice(0, 11);
+
+      // Valida contagem para feedback
+      const len = v.length;
+      const ok = (len === 11) || (len === 10 && v.endsWith('X'));
+      if (ok) {
+        message.textContent = 'Formato correto!';
+        message.style.color = 'green';
+      } else if (len < 10) {
+        message.textContent = 'CPF inválido! Deve conter 11 números ou 10 números + “X”.';
+        message.style.color = 'red';
+      } else {
+        message.textContent = 'CPF inválido! Muito longo ou “X” na posição errada.';
+        message.style.color = 'red';
+      }
+
+      // Aplica máscara conforme o padrão brasileiro
+      v = v
+        .replace(/(\d{3})(\d)/, '$1.$2')   // 1ª inserção de ponto
+        .replace(/(\d{3})(\d)/, '$1.$2')   // 2ª inserção de ponto
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // hífen + 2 caracteres ou X
+
+      cpfField.value = v;
+    });
+
+    // Função para formatar o telefone
+    document.getElementById('telefone').addEventListener('input', function (e) {
+      let telefone = e.target.value.replace(/\D/g, '');
+
+      if (telefone.length > 11) telefone = telefone.slice(0, 11);
+
+      if (telefone.length > 10) {
+        telefone = telefone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+      } else if (telefone.length > 5) {
+        telefone = telefone.replace(/^(\d{2})(\d{4})(\d{0,4})$/, '($1) $2-$3');
+      } else if (telefone.length > 2) {
+        telefone = telefone.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
+      } else {
+        telefone = telefone.replace(/^(\d*)$/, '($1');
+      }
+
+      e.target.value = telefone;
+    });
+  </script>
 </body>
 </html>

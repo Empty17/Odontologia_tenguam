@@ -28,7 +28,7 @@ public class OdontologicaApplication {
             // Tabela Funcionarios
             String sqlFuncionarios = """
                 CREATE TABLE IF NOT EXISTS Funcionarios (
-                    CPF CHAR(11) PRIMARY KEY NOT NULL,
+                    CPF CHAR(14) PRIMARY KEY NOT NULL,
                     Nome VARCHAR(100) NOT NULL,
                     Email VARCHAR(100) NOT NULL,
                     Senha VARCHAR(100) NOT NULL,
@@ -44,7 +44,7 @@ public class OdontologicaApplication {
             // Tabela Usuario
             String sqlUsuarios = """
                 CREATE TABLE IF NOT EXISTS Usuario (
-                    CPF VARCHAR(11) PRIMARY KEY NOT NULL,
+                    CPF VARCHAR(14) PRIMARY KEY NOT NULL,
                     Nome VARCHAR(100) NOT NULL,
                     Email VARCHAR(100) NOT NULL,
                     Senha VARCHAR(100) NOT NULL,
