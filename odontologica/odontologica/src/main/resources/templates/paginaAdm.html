@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página Administrativa - Clínica Tenguam</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Página Administrativa</h1>
+    <a href="/logout">Sair</a>
+  </header>
+
+  <section class="content">
+    <h2>Funcionários Cadastrados</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>CPF</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Cargo</th>
+          <th>Especialidade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loop para exibir os funcionários -->
+        <tr th:each="funcionario : ${funcionarios}">
+          <td th:text="${funcionario.cpf}">CPF</td>
+          <td th:text="${funcionario.nome}">Nome</td>
+          <td th:text="${funcionario.email}">Email</td>
+          <td th:text="${funcionario.cargo}">Cargo</td>
+          <td th:text="${funcionario.especialidade}">Especialidade</td>
+          <td>
+            <!-- Ações como editar ou excluir funcionário -->
+            <form th:action="@{/funcionario/excluir}" method="post">
+              <input type="hidden" th:name="cpf" th:value="${funcionario.cpf}">
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <a href="/cadastroFuncionario">Cadastrar Funcionário</a>
+  </section>
+
+  <footer>
+    <p>Clínica Tenguam © 2025</p>
+  </footer>
+</body>
+</html>

@@ -1,5 +1,7 @@
 package com.clinica.odontologica.Controller;
 
+import com.clinica.odontologica.model.Funcionario;
+import com.clinica.odontologica.repository.FuncionarioRepository;
 import com.clinica.odontologica.model.Usuario;
 import com.clinica.odontologica.repository.UsuarioRepository;
 import jakarta.servlet.http.HttpSession;
@@ -16,10 +18,12 @@ public class IndexController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
     // =======================
     // PÁGINAS ESTÁTICAS
     // =======================
-
     @GetMapping("/index")
     public String index() {
         return "index";
@@ -54,17 +58,28 @@ public class IndexController {
     // =======================
     // AUTENTICAÇÃO
     // =======================
-
     @PostMapping("/autenticar")
     public String autenticar(@RequestParam String CPF,
                              @RequestParam String senha,
                              Model model,
                              HttpSession session) {
 
-        Optional<Usuario> usuario = usuarioRepository.findById(CPF);
+        // Remove a formatação do CPF
+        String cpfLimpo = CPF.replaceAll("[^0-9X]", "");
+
+        // Verificação para administrador
+        if (cpfLimpo.equals("99999999999") && senha.equals("adm")) {
+            session.setAttribute("cpfUsuario", cpfLimpo);
+            session.setAttribute("perfilUsuario", "ADMIN");
+            return "redirect:/paginaAdm";
+        }
+
+        // Busca o usuário no banco
+        Optional<Usuario> usuario = usuarioRepository.findById(cpfLimpo);
 
         if (usuario.isPresent() && usuario.get().getSenha().equals(senha)) {
-            session.setAttribute("cpfUsuario", CPF);
+            session.setAttribute("cpfUsuario", cpfLimpo);
+            session.setAttribute("perfilUsuario", "COMUM");
             return "redirect:/perfil";
         }
 
@@ -75,7 +90,6 @@ public class IndexController {
     // =======================
     // CADASTRO
     // =======================
-
     @PostMapping("/cadastrar")
     public String cadastrarUsuario(@ModelAttribute Usuario usuario) {
         usuarioRepository.save(usuario);
@@ -85,7 +99,6 @@ public class IndexController {
     // =======================
     // PERFIL DO USUÁRIO
     // =======================
-
     @GetMapping("/perfil")
     public String perfil(HttpSession session, Model model) {
         String cpf = (String) session.getAttribute("cpfUsuario");
@@ -102,9 +115,65 @@ public class IndexController {
     }
 
     // =======================
+    // PÁGINA DO ADMINISTRADOR
+    // =======================
+    @GetMapping("/paginaAdm")
+    public String paginaAdministrador(HttpSession session, Model model) {
+        String perfil = (String) session.getAttribute("perfilUsuario");
+
+        if ("ADMIN".equals(perfil)) {
+            model.addAttribute("funcionarios", funcionarioRepository.findAll());
+            return "paginaAdm";
+        }
+
+        model.addAttribute("erro", "Acesso negado.");
+        return "redirect:/login";
+    }
+
+    // =======================
+    // CADASTRAR FUNCIONÁRIO
+    // =======================
+    @GetMapping("/cadastroFuncionarioAdm")
+    public String cadastroFuncionarioAdm() {
+        return "cadastroFuncionarioAdm";
+    }
+
+    @PostMapping("/funcionario/cadastrar")
+    public String cadastrarFuncionario(@ModelAttribute Funcionario funcionario, Model model) {
+        // Verificar se o CPF já está cadastrado
+        Optional<Funcionario> funcionarioExistente = funcionarioRepository.findById(funcionario.getCpf());
+
+        if (funcionarioExistente.isPresent()) {
+            model.addAttribute("erro", "Funcionário com este CPF já cadastrado.");
+            return "cadastroFuncionarioAdm";
+        }
+
+        // Caso contrário, salvar o novo funcionário
+        funcionarioRepository.save(funcionario);
+        model.addAttribute("sucesso", "Funcionário cadastrado com sucesso!");
+        return "redirect:/index"; // Redirecionar para a página inicial após o cadastro
+    }
+
+    // =======================
+    // EXCLUIR FUNCIONÁRIO
+    // =======================
+    @PostMapping("/funcionario/excluir")
+    public String excluirFuncionario(@RequestParam String cpf, Model model) {
+        Optional<Funcionario> funcionario = funcionarioRepository.findById(cpf);
+
+        if (funcionario.isPresent()) {
+            funcionarioRepository.delete(funcionario.get());
+            model.addAttribute("sucesso", "Funcionário excluído com sucesso.");
+        } else {
+            model.addAttribute("erro", "Funcionário não encontrado.");
+        }
+
+        return "redirect:/paginaAdm";
+    }
+
+    // =======================
     // RECUPERAÇÃO DE SENHA
     // =======================
-
     @PostMapping("/enviarRecuperacaoSenha")
     public String enviarRecuperacaoSenha(@RequestParam String email, Model model) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
@@ -119,8 +188,8 @@ public class IndexController {
 
     @PostMapping("/salvarNovaSenha")
     public String salvarNovaSenha(@RequestParam String email,
-                                   @RequestParam String novaSenha,
-                                   Model model) {
+                                  @RequestParam String novaSenha,
+                                  Model model) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
 
         if (usuario.isPresent()) {
@@ -131,5 +200,14 @@ public class IndexController {
 
         model.addAttribute("erro", "Erro ao tentar mudar a senha.");
         return "login";
+    }
+
+    // =======================
+    // LOGOUT
+    // =======================
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 }

@@ -12,7 +12,7 @@
   </header>
 
   <section class="content">
-    <form id="cadastroForm" action="/cadastrar" method="post">
+    <form id="cadastroForm" action="/cadastrar" method="post" onsubmit="limparCampos();">
       <label for="cpf">CPF:</label><br>
       <input type="text" id="cpf" name="cpf" maxlength="14" required><br><br>
       <div id="mensagem"></div><br>
@@ -77,7 +77,7 @@
       v = v
         .replace(/(\d{3})(\d)/, '$1.$2')   // 1ª inserção de ponto
         .replace(/(\d{3})(\d)/, '$1.$2')   // 2ª inserção de ponto
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // hífen + 2 caracteres ou X
+        .replace(/(\d{3})([\dX]{1,2})$/, '$1-$2'); // hífen + 2 caracteres ou X
 
       cpfField.value = v;
     });
@@ -100,6 +100,20 @@
 
       e.target.value = telefone;
     });
+
+    // Função para limpar a máscara antes de enviar o formulário
+    function limparCampos() {
+      // Limpar CPF
+      let cpf = cpfField.value;
+      cpf = cpf.replace(/\D/g, ''); // Remove qualquer caractere não numérico
+      cpfField.value = cpf; // Atualiza o campo com o CPF limpo
+
+      // Limpar telefone
+      const telefoneField = document.querySelector('#telefone');
+      let telefone = telefoneField.value;
+      telefone = telefone.replace(/\D/g, ''); // Remove qualquer caractere não numérico
+      telefoneField.value = telefone; // Atualiza o campo com o telefone limpo
+    }
   </script>
 </body>
 </html>

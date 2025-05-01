@@ -19,6 +19,12 @@
     <p><strong>E-mail:</strong> <span th:text="${usuario.email}">usuario@email.com</span></p>
     <p><strong>Telefone:</strong> <span th:text="${usuario.telefone}">(00) 00000-0000</span></p>
 
+    <!-- Formulário para exclusão de conta -->
+    <form action="/usuario/excluir" method="post" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
+      <!-- Passando o CPF como a chave primária -->
+      <input type="hidden" name="cpf" th:value="${usuario.cpf}" />
+      <button type="submit" class="btn-excluir">Excluir Conta</button>
+    </form>
   </div>
 </div>
 

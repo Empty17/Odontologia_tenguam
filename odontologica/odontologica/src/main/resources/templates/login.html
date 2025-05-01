@@ -12,17 +12,20 @@
   </header>
 
   <section class="content">
-    <!-- Verifica se há um erro e, se sim, dispara o alert -->
-    <div th:if="${erro}" th:text="${erro}" style="color: red;"></div>
+    <!-- Verifica se há um erro e, se sim, exibe o alerta -->
+    <div th:if="${erro}" class="alert">
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+      <span th:text="${erro}"></span>
+    </div>
 
-    <form th:action="@{/autenticar}" method="post">
-    
+    <form th:action="@{/autenticar}" method="post" onsubmit="limparCpf();">
       <label for="cpf">CPF:</label><br>
-      <input type="text" id="cpf" name="cpf" maxlength="14" required><br><br>
+      <input type="text" id="cpf" name="CPF" maxlength="14" required><br><br>
+      
       <div id="mensagem"></div><br>
-    
+
       <label for="senha">Senha:</label><br>
-      <input type="password" id="senha" th:name="senha" required><br><br>
+      <input type="password" id="senha" name="senha" required><br><br>
     
       <button type="submit">Entrar</button>
     </form>
@@ -30,7 +33,6 @@
     <a href="/cadastroUsuario" class="Cadastrar-se">Cadastrar-se</a>  
     <br><br>
     <a href="/esqueciSenha" class="esqueci a senha">Esqueci a Senha</a>  
-
   </section>
 
   <footer>
@@ -38,52 +40,50 @@
   </footer>
 
   <script>
-    // Função para formatar o CPF
-    function formatarCPF(cpf) {
-      // Remove tudo que não for número ou 'X'
-      cpf = cpf.replace(/[^0-9X]/g, '').toUpperCase();
+    // Função para formatar o CPF e verificar se ele tem 11 números ou 10 números + X
+    const cpfField = document.querySelector('#cpf');
+    const message = document.querySelector('#mensagem');
 
-      // Se tiver 'X' não deve estar em outra posição que não seja a última
-      if (cpf.slice(0, -1).includes('X')) {
-        cpf = cpf.replace(/X/g, '');  // Remove todos os 'X's errados
+    cpfField.addEventListener('input', () => {
+      let v = cpfField.value.toUpperCase().replace(/[^0-9X]/g, '');
+
+      // Se tiver X, garanta que só fique na última posição
+      if (v.slice(0, -1).includes('X')) {
+        v = v.replace(/X/g, '');
       }
 
-      // Aplica a máscara de CPF
-      if (cpf.length <= 11) {
-        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-        cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      // Limita a 11 caracteres
+      v = v.slice(0, 11);
+
+      // Validação
+      const len = v.length;
+      const ok = (len === 11) || (len === 10 && v.endsWith('X'));
+      if (ok) {
+        message.textContent = 'Formato correto!';
+        message.style.color = 'green';
+      } else if (len < 10) {
+        message.textContent = 'CPF inválido! Deve conter 11 números ou 10 números + “X”.';
+        message.style.color = 'red';
+      } else {
+        message.textContent = 'CPF inválido! Muito longo ou “X” na posição errada.';
+        message.style.color = 'red';
       }
 
-      return cpf;
-    }
+      // Aplica máscara
+      v = v
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})([\dX]{1,2})$/, '$1-$2');
 
-    // Função de validação do CPF
-    function validarCPF(cpf) {
-      const regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
-      return regex.test(cpf);
-    }
-
-    // Evento de formatação e validação do CPF enquanto o usuário digita
-    document.addEventListener('DOMContentLoaded', function () {
-      const cpfField = document.getElementById('cpf');
-      const mensagem = document.getElementById('mensagem');
-      
-      cpfField.addEventListener('input', function () {
-        // Formata o CPF
-        cpfField.value = formatarCPF(cpfField.value);
-
-        // Valida o CPF
-        if (validarCPF(cpfField.value)) {
-          mensagem.textContent = 'CPF válido!';
-          mensagem.style.color = 'green';
-        } else {
-          mensagem.textContent = 'CPF inválido! Deve estar no formato 000.000.000-00 ou 000.000.000-0X';
-          mensagem.style.color = 'red';
-        }
-      });
+      cpfField.value = v;
     });
-  </script>
 
+    // Função para limpar a máscara do CPF antes de enviar o formulário
+    function limparCpf() {
+      let cpf = cpfField.value;
+      cpf = cpf.replace(/\D/g, ''); // Remove qualquer caractere não numérico
+      cpfField.value = cpf; // Atualiza o campo com o CPF limpo
+    }
+  </script>
 </body>
 </html>
