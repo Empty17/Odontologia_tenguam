@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Clínica Tenguam</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Página de Login</title>
+  <link rel="stylesheet" href="stylelogin.css" />
 </head>
+
 <body>
+
   <header>
-    <h1><a href="/index" id="voltaMenu">Login - Clínica Tenguam</a></h1>
+    <a href="/index" class="voltar">← Voltar à Tela de Início</a>
   </header>
 
-  <section class="content">
-    <!-- Verifica se há um erro e, se sim, exibe o alerta -->
-    <div th:if="${erro}" class="alert">
-      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-      <span th:text="${erro}"></span>
+  <div class="login-container">
+    <div class="login-box">
+      <!-- Verifica se há um erro e, se sim, exibe o alerta -->
+      <div th:if="${erro}" class="alert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <span th:text="${erro}"></span>
+      </div>
+
+      <h2>Entrar</h2>
+      <form th:action="@{/autenticar}" method="post" onsubmit="limparCpf();">
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" name="CPF" maxlength="14" placeholder="Escreva seu CPF" required>
+
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="Escreva sua senha" required>
+
+        <a href="/esqueciSenha">Esqueceu a senha?</a>
+
+        <button type="submit">Entrar</button>
+      </form>
+
+      <div class="divider"></div>
+
+      <form action="/cadastroUsuario">
+        <button type="submit" class="cadastrar-btn">Cadastrar</button>
+      </form>
     </div>
-
-    <form th:action="@{/autenticar}" method="post" onsubmit="limparCpf();">
-      <label for="cpf">CPF:</label><br>
-      <input type="text" id="cpf" name="CPF" maxlength="14" required><br><br>
-      
-      <div id="mensagem"></div><br>
-
-      <label for="senha">Senha:</label><br>
-      <input type="password" id="senha" name="senha" required><br><br>
-    
-      <button type="submit">Entrar</button>
-    </form>
-    
-    <a href="/cadastroUsuario" class="Cadastrar-se">Cadastrar-se</a>  
-    <br><br>
-    <a href="/esqueciSenha" class="esqueci a senha">Esqueci a Senha</a>  
-  </section>
-
-  <footer>
-    <p>Clínica Tenguam © 2025</p>
-  </footer>
+  </div>
 
   <script>
     // Função para formatar o CPF e verificar se ele tem 11 números ou 10 números + X
@@ -86,4 +90,5 @@
     }
   </script>
 </body>
+
 </html>

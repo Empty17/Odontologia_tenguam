@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    padding: 20px;
+    background-color: #f7f7f7;
+  }
+  
+  .voltar {
+    text-decoration: none;
+    color: #003366;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+  }
+  
+  .container h2 {
+    color: #003366;
+    margin-bottom: 20px;
+  }
+  
+  form {
+    border: 1px solid #ccc;
+    padding: 30px;
+    background: #fefefe;
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #003366;
+  }
+  
+  .form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .checkbox {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    gap: 8px;
+  }
+  
+  .mensagem {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  .cadastrar-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  

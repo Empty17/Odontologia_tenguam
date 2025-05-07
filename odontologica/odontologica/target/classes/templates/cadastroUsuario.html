@@ -4,62 +4,75 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro de Usuário - Clínica Tenguam</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="stylecadasusu.css">
 </head>
 <body>
+
   <header>
-    <h1><a href="/index" id="voltaMenu">Cadastro de Usuário</a></h1>
+    <a href="/login" class="voltar">← Voltar à Tela de Login</a>
   </header>
 
-  <section class="content">
+  <section class="container">
+    <h2>Cadastro</h2>
     <form id="cadastroForm" action="/cadastrar" method="post" onsubmit="limparCampos();">
-      <label for="cpf">CPF:</label><br>
-      <input type="text" id="cpf" name="cpf" maxlength="14" required><br><br>
-      <div id="mensagem"></div><br>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nome">Nome Completo</label>
+          <input type="text" id="nome" name="nome" placeholder="Escreva seu Nome Completo" required>
+        </div>
 
-      <label for="nome">Nome:</label><br>
-      <input type="text" id="nome" name="nome" required><br><br>
+        <div class="form-group">
+          <label for="dataNascimento">Data de Nascimento</label>
+          <input type="date" id="dataNascimento" name="dataNascimento" required>
+        </div>
 
-      <label for="email">Email:</label><br>
-      <input type="email" id="email" name="email" required><br><br>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="Escreva seu E-mail" required>
+        </div>
 
-      <label for="senha">Senha:</label><br>
-      <input type="password" id="senha" name="senha" required><br><br>
+        <div class="form-group">
+          <label for="telefone">Telefone</label>
+          <input type="text" id="telefone" name="telefone" placeholder="Escreva seu Telefone" maxlength="15" required>
+        </div>
 
-      <label for="endereco">Endereço:</label><br>
-      <input type="text" id="endereco" name="endereco" required><br><br>
+        <div class="form-group">
+          <label for="cpf">CPF</label>
+          <input type="text" id="cpf" name="cpf" placeholder="Escreva seu CPF" maxlength="14" required>
+        </div>
 
-      <label for="dataNascimento">Data de Nascimento:</label><br>
-      <input type="date" id="dataNascimento" name="dataNascimento" required><br><br>
+        <div class="form-group">
+          <label for="endereco">Endereço</label>
+          <input type="text" id="endereco" name="endereco" placeholder="Escreva seu Endereço" required>
+        </div>
 
-      <label for="telefone">Telefone:</label><br>
-      <input type="text" id="telefone" name="telefone" required maxlength="15"><br><br>
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="Escreva sua senha" required>
+        </div>
+      </div>
 
-      <button type="submit">Cadastrar</button>
+      <div class="checkbox">
+        <input type="checkbox" required>
+        <label>Termos de Consentimento</label>
+      </div>
+
+      <div class="mensagem" id="mensagem"></div>
+
+      <button type="submit" class="cadastrar-btn">Cadastrar</button>
     </form>
   </section>
 
-  <footer>
-    <p>Clínica Tenguam © 2025</p>
-  </footer>
-
   <script>
-    // Função para formatar o CPF e verificar se ele tem 11 números (ou 10 números e X no final)
     const cpfField = document.querySelector('#cpf');
-    const message = document.querySelector('#mensagem'); // seu elemento de feedback
+    const message = document.querySelector('#mensagem');
 
     cpfField.addEventListener('input', () => {
       let v = cpfField.value.toUpperCase().replace(/[^0-9X]/g, '');
 
-      // Se tiver X, garanta que só fique na última posição
-      if (v.slice(0, -1).includes('X')) {
-        v = v.replace(/X/g, ''); // remove Xs “erradas”
-      }
-
-      // Limita a 11 caracteres
+      if (v.slice(0, -1).includes('X')) v = v.replace(/X/g, '');
       v = v.slice(0, 11);
 
-      // Valida contagem para feedback
       const len = v.length;
       const ok = (len === 11) || (len === 10 && v.endsWith('X'));
       if (ok) {
@@ -73,19 +86,16 @@
         message.style.color = 'red';
       }
 
-      // Aplica máscara conforme o padrão brasileiro
       v = v
-        .replace(/(\d{3})(\d)/, '$1.$2')   // 1ª inserção de ponto
-        .replace(/(\d{3})(\d)/, '$1.$2')   // 2ª inserção de ponto
-        .replace(/(\d{3})([\dX]{1,2})$/, '$1-$2'); // hífen + 2 caracteres ou X
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})([\dX]{1,2})$/, '$1-$2');
 
       cpfField.value = v;
     });
 
-    // Função para formatar o telefone
     document.getElementById('telefone').addEventListener('input', function (e) {
       let telefone = e.target.value.replace(/\D/g, '');
-
       if (telefone.length > 11) telefone = telefone.slice(0, 11);
 
       if (telefone.length > 10) {
@@ -101,18 +111,13 @@
       e.target.value = telefone;
     });
 
-    // Função para limpar a máscara antes de enviar o formulário
     function limparCampos() {
-      // Limpar CPF
-      let cpf = cpfField.value;
-      cpf = cpf.replace(/\D/g, ''); // Remove qualquer caractere não numérico
-      cpfField.value = cpf; // Atualiza o campo com o CPF limpo
+      let cpf = cpfField.value.replace(/\D/g, '');
+      cpfField.value = cpf;
 
-      // Limpar telefone
       const telefoneField = document.querySelector('#telefone');
-      let telefone = telefoneField.value;
-      telefone = telefone.replace(/\D/g, ''); // Remove qualquer caractere não numérico
-      telefoneField.value = telefone; // Atualiza o campo com o telefone limpo
+      let telefone = telefoneField.value.replace(/\D/g, '');
+      telefoneField.value = telefone;
     }
   </script>
 </body>

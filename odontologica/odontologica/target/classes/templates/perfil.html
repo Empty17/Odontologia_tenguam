@@ -25,6 +25,21 @@
       <input type="hidden" name="cpf" th:value="${usuario.cpf}" />
       <button type="submit" class="btn-excluir">Excluir Conta</button>
     </form>
+
+    <!-- Histórico de Consultas -->
+    <div class="consultas">
+      <h3>Histórico de Consultas</h3>
+      <div th:if="${#lists.isEmpty(consultas)}">
+        <p>Nenhuma consulta registrada.</p>
+      </div>
+      <div th:each="consulta : ${consultas}">
+        <hr>
+        <p><strong>Data da Consulta:</strong> <span th:text="${#dates.format(consulta.dataConsulta, 'dd/MM/yyyy HH:mm')}">00/00/0000 00:00</span></p>
+        <p><strong>Diagnóstico:</strong> <span th:text="${consulta.diagnostico}">Texto do diagnóstico</span></p>
+        <p><strong>Histórico:</strong> <span th:text="${consulta.historico}">Texto do histórico</span></p>
+        <p><strong>Tratamento:</strong> <span th:text="${consulta.tratamento}">Texto do tratamento</span></p>
+      </div>
+    </div>
   </div>
 </div>
 

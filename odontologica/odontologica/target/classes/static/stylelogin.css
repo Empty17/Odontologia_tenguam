@@ -1,0 +1,96 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+  }
+  
+  header {
+    padding: 20px;
+    background-color: #f7f7f7;
+  }
+  
+  .voltar {
+    text-decoration: none;
+    color: #003366;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+  }
+  
+  .login-box {
+    border: 1px solid #ccc;
+    padding: 30px;
+    width: 300px;
+    text-align: center;
+  }
+  
+  .login-box h2 {
+    margin-bottom: 20px;
+    color: #003366;
+  }
+  
+  .login-box label {
+    float: left;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .login-box input[type="text"],
+  .login-box input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+  
+  .login-box a {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: #003366;
+    text-decoration: none;
+    margin-bottom: 20px;
+  }
+  
+  .login-box button {
+    width: 100%;
+    padding: 10px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .login-box .divider {
+    margin: 20px 0;
+    text-align: center;
+    border-top: 1px solid #ccc;
+    position: relative;
+  }
+  
+  .login-box .divider::before {
+    content: "Ou";
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 10px;
+    color: #777;
+  }
+  
+  .cadastrar-btn {
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+  }
+  
