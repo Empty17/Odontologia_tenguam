@@ -11,8 +11,18 @@ header {
   background-color: #2b8cb9;
   color: white;
   padding: 20px;
-  text-align: center;
 }
+
+  .titulopagadm {
+    text-align: center;
+  }
+
+  .voltar {
+    text-decoration: none;
+    color: #003366;
+    font-weight: bold;
+    font-size: 14px;
+  }
 
 /* Navegação */
 nav {

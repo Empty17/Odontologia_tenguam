@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendamento de Consulta</title>
+
+    <!-- CSS externo -->
+    <link href="estilos.css" rel="stylesheet" />
+
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet" />
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/locale/pt-br.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Agendamento de Consulta</h2>
+        <div id="calendar"></div>
+    </div>
+
+    <div id="agendamentoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Confirmar Agendamento</h3>
+            <p>Você deseja marcar uma consulta para o dia <strong id="selectedDate"></strong>?</p>
+            <div class="form-container">
+                <label for="medico">Médico</label>
+                <select id="medico" required>
+                    <option value="">Carregando médicos...</option>
+                </select>
+
+                <label for="hora">Hora de Agendamento</label>
+                <input type="time" id="hora" required/>
+
+                <button id="confirmAgendamento">Confirmar Agendamento</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#calendar').fullCalendar({
+                locale: 'pt-br',
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: '/agendamentos',
+                editable: true,
+                droppable: true,
+                dayClick: function (date) {
+                    const dataSelecionada = date.format('YYYY-MM-DD');
+                    $('#selectedDate').text(dataSelecionada);
+                    carregarMedicos();
+                    $('#agendamentoModal').fadeIn();
+                }
+            });
+
+            $('.close').click(function () {
+                $('#agendamentoModal').fadeOut();
+            });
+
+            $('#confirmAgendamento').click(function () {
+                const agendamentoData = {
+                    medicoCpf: $('#medico').val(),
+                    data_agendamento: $('#selectedDate').text() + ' ' + $('#hora').val()
+                };
+
+                $.ajax({
+                    url: '/agendamentos',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(agendamentoData),
+                    success: function () {
+                        alert('Agendamento realizado com sucesso!');
+                        $('#calendar').fullCalendar('refetchEvents');
+                        $('#agendamentoModal').fadeOut();
+                    },
+                    error: function () {
+                        alert('Erro ao agendar. Tente novamente.');
+                    }
+                });
+            });
+
+            function carregarMedicos() {
+                $.ajax({
+                    url: '/api/medicos',
+                    method: 'GET',
+                    success: function (medicos) {
+                        const select = $('#medico');
+                        select.empty();
+                        select.append('<option value="">Escolha o Médico</option>');
+                        medicos.forEach(function (medico) {
+                            select.append(`<option value="${medico.cpf}">Dr(a). ${medico.nome}</option>`);
+                        });
+                    },
+                    error: function () {
+                        alert('Erro ao carregar médicos.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

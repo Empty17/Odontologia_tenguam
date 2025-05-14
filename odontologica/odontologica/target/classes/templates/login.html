@@ -26,6 +26,7 @@
       <form th:action="@{/autenticar}" method="post" onsubmit="limparCpf();">
         <label for="cpf">CPF</label>
         <input type="text" id="cpf" name="CPF" maxlength="14" placeholder="Escreva seu CPF" required>
+        <div id="mensagem" style="font-size: 0.9em; margin-top: 4px;"></div>
 
         <label for="senha">Senha</label>
         <input type="password" id="senha" name="senha" placeholder="Escreva sua senha" required>
@@ -44,22 +45,20 @@
   </div>
 
   <script>
-    // Função para formatar o CPF e verificar se ele tem 11 números ou 10 números + X
     const cpfField = document.querySelector('#cpf');
     const message = document.querySelector('#mensagem');
 
     cpfField.addEventListener('input', () => {
       let v = cpfField.value.toUpperCase().replace(/[^0-9X]/g, '');
 
-      // Se tiver X, garanta que só fique na última posição
+      // Se tiver X, garante que só fique no final
       if (v.slice(0, -1).includes('X')) {
         v = v.replace(/X/g, '');
       }
 
-      // Limita a 11 caracteres
-      v = v.slice(0, 11);
+      v = v.slice(0, 11); // Limita a 11 caracteres
 
-      // Validação
+      // Validação do formato
       const len = v.length;
       const ok = (len === 11) || (len === 10 && v.endsWith('X'));
       if (ok) {
@@ -73,20 +72,19 @@
         message.style.color = 'red';
       }
 
-      // Aplica máscara
-      v = v
+      // Aplica a máscara
+      let masked = v
         .replace(/(\d{3})(\d)/, '$1.$2')
         .replace(/(\d{3})(\d)/, '$1.$2')
         .replace(/(\d{3})([\dX]{1,2})$/, '$1-$2');
 
-      cpfField.value = v;
+      cpfField.value = masked;
     });
 
-    // Função para limpar a máscara do CPF antes de enviar o formulário
     function limparCpf() {
       let cpf = cpfField.value;
-      cpf = cpf.replace(/\D/g, ''); // Remove qualquer caractere não numérico
-      cpfField.value = cpf; // Atualiza o campo com o CPF limpo
+      cpf = cpf.replace(/\D/g, ''); // Remove tudo que não é número
+      cpfField.value = cpf;
     }
   </script>
 </body>

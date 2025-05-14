@@ -1,9 +1,11 @@
 package com.clinica.odontologica.Controller;
 
 import com.clinica.odontologica.model.Funcionario;
-import com.clinica.odontologica.repository.FuncionarioRepository;
+import com.clinica.odontologica.model.Agendamento;
 import com.clinica.odontologica.model.Usuario;
+import com.clinica.odontologica.repository.FuncionarioRepository;
 import com.clinica.odontologica.repository.UsuarioRepository;
+import com.clinica.odontologica.repository.AgendamentoRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,9 @@ public class IndexController {
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
 
     // =======================
     // PÁGINAS ESTÁTICAS
@@ -107,6 +112,8 @@ public class IndexController {
             Optional<Usuario> usuario = usuarioRepository.findById(cpf);
             if (usuario.isPresent()) {
                 model.addAttribute("usuario", usuario.get());
+                // Buscar agendamentos do usuário
+                model.addAttribute("agendamentos", agendamentoRepository.findByCpfUsuario(cpf));
                 return "perfil";
             }
         }
@@ -151,7 +158,7 @@ public class IndexController {
         // Caso contrário, salvar o novo funcionário
         funcionarioRepository.save(funcionario);
         model.addAttribute("sucesso", "Funcionário cadastrado com sucesso!");
-        return "redirect:/index"; // Redirecionar para a página inicial após o cadastro
+        return "redirect:/paginaAdm"; // Redirecionar para a página inicial após o cadastro
     }
 
     // =======================
@@ -201,6 +208,50 @@ public class IndexController {
         model.addAttribute("erro", "Erro ao tentar mudar a senha.");
         return "login";
     }
+
+    // =======================
+    // TELA DE AGENDAMENTO
+    // =======================
+    @GetMapping("/agendamento")
+    public String telaAgendamento(HttpSession session, Model model) {
+        String cpf = (String) session.getAttribute("cpfUsuario");
+
+        if (cpf != null) {
+            Optional<Usuario> usuario = usuarioRepository.findById(cpf);
+            if (usuario.isPresent()) {
+                model.addAttribute("usuario", usuario.get());
+                model.addAttribute("agendamento", new Agendamento());
+                return "agendamento";
+            }
+        }
+
+        return "redirect:/login";
+    }
+
+    // =======================
+    // SALVAR AGENDAMENTO
+    // =======================
+    @PostMapping("/agendamento/salvar")
+    public String salvarAgendamento(@ModelAttribute Agendamento agendamento,
+                                    HttpSession session,
+                                    Model model) {
+
+        String cpfUsuario = (String) session.getAttribute("cpfUsuario");
+
+        if (cpfUsuario == null) {
+            return "redirect:/login";
+        }
+
+        agendamento.setCpfUsuario(cpfUsuario);
+        agendamento.setStatusAgendamento("Pendente");
+        agendamentoRepository.save(agendamento);
+
+        model.addAttribute("sucesso", "Agendamento realizado com sucesso!");
+        return "redirect:/perfil";
+    }
+
+
+    
 
     // =======================
     // LOGOUT
