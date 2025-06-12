@@ -1,10 +1,12 @@
 package com.clinica.odontologica.repository;
 
 import com.clinica.odontologica.model.Funcionario;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
 public interface FuncionarioRepository extends JpaRepository<Funcionario, String> {
-    // O JpaRepository já oferece os métodos básicos de CRUD
+    Funcionario findByCpf(String cpf);
+    Optional<Funcionario> findByEmail(String email);
 }

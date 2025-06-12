@@ -1,0 +1,132 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* AppBar (Cabeçalho) */
+header {
+  background: linear-gradient(to right, #1e3a8a, #3b82f6);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 a {
+  color: #fff;
+  font-size: 24px;
+  text-decoration: none;
+}
+
+header img.logo {
+  height: 80px;
+  width: auto;
+}
+
+/* Conteúdo Principal */
+.content {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.content label {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.content input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.content input:focus {
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.content button {
+  background-color: #4285f4;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.content button:hover {
+  background-color: #3267d6;
+}
+
+.content div[th\\:if="${erro}"] {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Rodapé */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #e0e0e0;
+  color: #666;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  header h1 a {
+    font-size: 20px;
+  }
+
+  header img.logo {
+    margin-top: 10px;
+    height: 30px;
+  }
+
+  .content {
+    margin: 20px;
+    padding: 15px;
+  }
+
+  .content input,
+  .content button {
+    font-size: 14px;
+  }
+
+  footer {
+    font-size: 12px;
+    padding: 15px;
+  }
+}

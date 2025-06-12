@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Clínica Tenguam</title>
+    <link rel="stylesheet" href="style-contato.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Cabeçalho -->
+<header>
+    <h1><a href="/index">Contato - Clínica Tenguam</a></h1>
+    <img src="/images/Logo-Tenguam.png" alt="Logo Clínica Tenguam" class="logo">
+</header>
+
+<!-- Barra de Navegação -->
+<nav>
+    <a href="/sobrenos">Sobre Nós</a>
+    <a href="/servicos">Serviços</a>
+    <a href="/contato">Contato</a>
+    <div th:if="${nomeUsuario != null}" class="user-dropdown">
+        <a class="dropbtn" th:text="${nomeUsuario}"></a>
+        <div class="dropdown-content">
+            <a th:if="${perfilUsuario == 'COMUM'}" th:href="@{/perfil}">Perfil</a>
+            <a th:if="${perfilUsuario == 'FUNCIONARIO'}" th:href="@{/paginaFuncionario}">Perfil</a>
+            <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/paginaAdm}">Perfil</a>
+            <a th:href="@{/logout}">Sair</a>
+        </div>
+    </div>
+    <a th:if="${nomeUsuario == null}" th:href="@{/login}">Login</a>
+</nav>
+
+<!-- Seção Hero -->
+<div class="hero">
+    <h1>Entre em Contato</h1>
+</div>
+
+<!-- Conteúdo Principal -->
+<div class="content">
+    <h2>Fale Conosco</h2>
+    <p>Se você tiver dúvidas, comentários ou precisar de mais informações, entre em contato conosco. Ficaremos felizes em ajudar!</p>
+
+    <!-- Informações de Contato -->
+    <div class="informacoes-contato">
+        <div class="info-item">
+            <h3>Telefone</h3>
+            <p>(00) 00000-0000</p>
+        </div>
+        <div class="info-item">
+            <h3>E-mail</h3>
+            <p>contato@clinicatenguam.com</p>
+        </div>
+        <div class="info-item">
+            <h3>Endereço</h3>
+            <p>Rua Exemplo, 123 - Bairro - Cidade, Estado</p>
+        </div>
+    </div>
+</div>
+
+<!-- Rodapé -->
+<footer>
+    <p>© 2025 Clínica Tenguam - Todos os direitos reservados</p>
+</footer>
+
+<script>
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+        window.location.reload();
+      }
+    });
+</script>
+</body>
+</html>

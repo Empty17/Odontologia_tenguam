@@ -1,0 +1,179 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  color: #202124;
+  line-height: 1.5;
+}
+
+header {
+  background: linear-gradient(135deg, #004173 0%, #0979B0 100%);
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+header h1 a {
+  margin: 0;
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  color: white;
+  text-decoration: none;
+}
+
+header h1 a:hover {
+  color: #7cdaf9;
+}
+
+.header-logo {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: clamp(90px, 35vw, 120px);
+  height: auto;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.form-container {
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  padding: 24px;
+}
+
+.form-header {
+  border-bottom: 1px solid #dadce0;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.form-header h2 {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0;
+  color: #202124;
+}
+
+.form-header p {
+  font-size: 14px;
+  color: #5f6368;
+  margin: 8px 0 0;
+}
+
+.form-field {
+  margin-bottom: 24px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+  margin-bottom: 8px;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background: #f8f9fa;
+  transition: border-color 0.2s;
+}
+
+.form-field input:focus {
+  border-color: #4285f4;
+  outline: none;
+  background: white;
+}
+
+#mensagem {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+button {
+  background: #4285f4;
+  color: white;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #3267d6;
+}
+
+footer {
+  background: #f8f9fa;
+  color: #5f6368;
+  text-align: center;
+  padding: 1rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+footer p {
+  margin: 0;
+  font-size: 12px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 16px;
+  }
+
+  .form-header h2 {
+    font-size: 20px;
+  }
+
+  .form-field input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 a {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .header-logo {
+    width: clamp(80px, 20vw, 100px);
+  }
+
+  .form-header h2 {
+    font-size: 18px;
+  }
+
+  .form-field label {
+    font-size: 12px;
+  }
+
+  .form-field input {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+  }
+}

@@ -1,55 +1,233 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página Administrativa - Clínica Tenguam</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Administrativa - Clínica Tenguam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style-admin.css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- Incluindo a biblioteca jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <header>
-    <a href="/login" class="voltar">← Voltar à Tela de Início</a>
-    <h1 class="titulopagadm">Página Administrativa</h1>
-  </header>
+<header>
+    <h1><a href="/paginaAdm">Clínica Tenguam - Página do Administrador</a></h1>
+    <img src="/images/Logo-Tenguam.png" alt="Logo Clínica Tenguam" class="logo">
+</header>
 
-  <section class="content">
-    <h2>Funcionários Cadastrados</h2>
+<nav>
+    <div class="user-dropdown" id="userMenu" style="display: none;">
+        <a href="#" id="userNameLink">Usuário</a>
+        <div class="dropdown-content">
+            <a href="/logout">Sair</a>
+        </div>
+    </div>
+    <a href="/login" id="loginLink" style="display: none;">Login</a>
+</nav>
 
-    <table>
-      <thead>
-        <tr>
-          <th>CPF</th>
-          <th>Nome</th>
-          <th>Email</th>
-          <th>Cargo</th>
-          <th>Especialidade</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Loop para exibir os funcionários -->
-        <tr th:each="funcionario : ${funcionarios}">
-          <td th:text="${funcionario.cpf}">CPF</td>
-          <td th:text="${funcionario.nome}">Nome</td>
-          <td th:text="${funcionario.email}">Email</td>
-          <td th:text="${funcionario.cargo}">Cargo</td>
-          <td th:text="${funcionario.especialidade}">Especialidade</td>
-          <td>
-            <!-- Ações como editar ou excluir funcionário -->
-            <form th:action="@{/funcionario/excluir}" method="post">
-              <input type="hidden" th:name="cpf" th:value="${funcionario.cpf}">
-              <button type="submit">Excluir</button>
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<main>
+    <section class="employees-section">
+        <h2>Funcionários Cadastrados</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>CPF</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Cargo</th>
+                <th>Especialidade</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="funcionario : ${funcionarios}">
+                <td th:text="${funcionario.cpf}">CPF</td>
+                <td th:text="${funcionario.nome}">Nome</td>
+                <td th:text="${funcionario.email}">Email</td>
+                <td th:text="${funcionario.cargo}">Cargo</td>
+                <td th:text="${funcionario.especialidade}">Especialidade</td>
+                <td>
+                    <form th:action="@{/funcionario/excluir}" method="post">
+                        <input type="hidden" th:name="cpf" th:value="${funcionario.cpf}">
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="/cadastroFuncionario" class="add-employee">Cadastrar Funcionário</a>
+    </section>
 
-    <a href="/cadastroFuncionario">Cadastrar Funcionário</a>
-  </section>
+    <section class="appointments-section">
+        <h2>Agendamentos</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Data</th>
+                <th>Problema</th>
+                <th>Status</th>
+                <th>Médico</th>
+                <th>Detalhes</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="consulta : ${consultas}">
+                <td th:text="${consulta.data}"></td>
+                <td th:text="${consulta.problema}"></td>
+                <td th:text="${consulta.status}"></td>
+                <td th:text="${consulta.medico}"></td>
+                <td>
+                    <button class="btn-relatorio"
+                            th:attr="data-id=${consulta['idAgendamento']},
+                                     data-diagnostico=${consulta['diagnostico']},
+                                     data-historico=${consulta['historico']},
+                                     data-tratamento=${consulta['tratamento']},
+                                     data-data=${consulta['data']},
+                                     data-medico=${consulta['medico']}">
+                        Gerar Relatório
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 
-  <footer>
+    <!-- Modal para exibir o Relatório -->
+    <div id="modalRelatorio" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">×</span>
+            <h2>Relatório do Agendamento</h2>
+            <p><strong>Data:</strong> <span id="relatorioData"></span></p>
+            <p><strong>Médico:</strong> <span id="relatorioMedico"></span></p>
+            <p><strong>Diagnóstico:</strong> <span id="relatorioDiagnostico"></span></p>
+            <p><strong>Histórico:</strong> <span id="relatorioHistorico"></span></p>
+            <p><strong>Tratamento:</strong> <span id="relatorioTratamento"></span></p>
+            <button id="downloadRelatorio">Download do Relatório em PDF</button>
+        </div>
+    </div>
+</main>
+
+<footer>
     <p>Clínica Tenguam © 2025</p>
-  </footer>
+</footer>
+
+<script>
+    fetch("/sessao/nome")
+      .then(response => response.json())
+      .then(data => {
+        const loginLink = document.getElementById("loginLink");
+        const userMenu = document.getElementById("userMenu");
+        const userNameLink = document.getElementById("userNameLink");
+
+        if (data.nome) {
+          let destino = "/perfil";
+          if (data.perfil === "FUNCIONARIO") destino = "/paginaFuncionario";
+          if (data.perfil === "ADMIN") destino = "/paginaAdm";
+
+          userNameLink.textContent = data.nome;
+          userNameLink.setAttribute("href", destino);
+          userMenu.style.display = "inline-block";
+        } else {
+          loginLink.style.display = "inline-block";
+        }
+      })
+      .catch(() => {
+        document.getElementById("loginLink").style.display = "inline-block";
+      });
+
+    // Modal Relatório Script
+    var modalRelatorio = document.getElementById("modalRelatorio");
+    var closeBtn = document.getElementsByClassName("close-btn")[0];
+    var relatorioBtns = document.querySelectorAll('.btn-relatorio');
+    var downloadBtn = document.getElementById("downloadRelatorio");
+
+    relatorioBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.getElementById("relatorioData").innerText = this.getAttribute("data-data");
+        document.getElementById("relatorioMedico").innerText = this.getAttribute("data-medico");
+        document.getElementById("relatorioDiagnostico").innerText = this.getAttribute("data-diagnostico");
+        document.getElementById("relatorioHistorico").innerText = this.getAttribute("data-historico");
+        document.getElementById("relatorioTratamento").innerText = this.getAttribute("data-tratamento");
+
+        modalRelatorio.style.display = "block";
+      });
+    });
+
+    closeBtn.onclick = function() {
+      modalRelatorio.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modalRelatorio) {
+        modalRelatorio.style.display = "none";
+      }
+    }
+
+    // Função para download do relatório em PDF com quebra de linha e nova página
+    downloadBtn.onclick = function () {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const margin = 10;
+        const pageHeight = doc.internal.pageSize.height;
+        let y = margin + 10;
+
+        const data = document.getElementById("relatorioData").innerText;
+        const medico = document.getElementById("relatorioMedico").innerText;
+        const diagnostico = document.getElementById("relatorioDiagnostico").innerText;
+        const historico = document.getElementById("relatorioHistorico").innerText;
+        const tratamento = document.getElementById("relatorioTratamento").innerText;
+
+        // Título
+        doc.setFontSize(18);
+        doc.text("Relatório do Agendamento", margin, y);
+        y += 15;
+
+        doc.setFontSize(12);
+
+        // Informações básicas (sem horário pois não definido)
+        const infoBasica = [
+            `Data: ${data}`,
+            `Médico: ${medico}`
+        ];
+
+        infoBasica.forEach(linha => {
+            if (y + 10 > pageHeight - margin) {
+                doc.addPage();
+                y = margin;
+            }
+            doc.text(linha, margin, y);
+            y += 10;
+        });
+
+        // Função para adicionar texto com quebra e checar se precisa de nova página
+        function addWrappedText(label, text, yPosition) {
+            const maxWidth = 180;
+            const lines = doc.splitTextToSize(text, maxWidth);
+            const totalHeight = lines.length * 6 + 6;
+
+            if (yPosition + totalHeight > pageHeight - margin) {
+                doc.addPage();
+                yPosition = margin;
+            }
+
+            doc.setFont(undefined, "bold");
+            doc.text(`${label}:`, margin, yPosition);
+            doc.setFont(undefined, "normal");
+            doc.text(lines, margin + 10, yPosition + 6);
+            return yPosition + totalHeight;
+        }
+
+        y = addWrappedText("Diagnóstico", diagnostico, y);
+        y = addWrappedText("Histórico", historico, y);
+        y = addWrappedText("Tratamento", tratamento, y);
+
+        doc.save("relatorio_agendamento.pdf");
+    }
+</script>
+
 </body>
 </html>

@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Página de Login</title>
-  <link rel="stylesheet" href="stylelogin.css" />
+  <link rel="stylesheet" href="stylelogin.css"/>
 </head>
 
 <body>
 
-  <header>
-    <a href="/index" class="voltar">← Voltar à Tela de Início</a>
-  </header>
+<header>
+  <a href="/index" class="voltar">← Voltar à Tela de Início</a>
+  <img src="/images/Logo-Tenguam.png" alt="Clínica Tenguam Logo" class="logo">
+</header>
 
   <div class="login-container">
     <div class="login-box">
@@ -22,7 +23,7 @@
         <span th:text="${erro}"></span>
       </div>
 
-      <h2>Entrar</h2>
+      <h2>Clínica Tenguam</h2>
       <form th:action="@{/autenticar}" method="post" onsubmit="limparCpf();">
         <label for="cpf">CPF</label>
         <input type="text" id="cpf" name="CPF" maxlength="14" placeholder="Escreva seu CPF" required>
@@ -87,6 +88,23 @@
       cpfField.value = cpf;
     }
   </script>
+
+  <script>
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+            window.location.reload();
+        }
+    });
+</script>
+
+<script>
+    window.onload = function() {
+        sessionStorage.clear(); // Limpa o sessionStorage
+        localStorage.clear(); // Limpa o localStorage, se necessário
+    };
+</script>
+
+
 </body>
 
 </html>

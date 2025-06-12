@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços - Clínica Tenguam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style-servicos.css">
+</head>
+<body>
+<header>
+    <h1><a href="/index">Serviços - Clínica Tenguam</a></h1>
+    <img src="/images/Logo-Tenguam.png" alt="Logo Clínica Tenguam" class="logo">
+</header>
+
+<nav>
+    <a href="/sobrenos">Sobre Nós</a>
+    <a href="/servicos">Serviços</a>
+    <a href="/contato">Contato</a>
+    <div th:if="${nomeUsuario != null}" class="user-dropdown">
+        <a class="dropbtn" th:text="${nomeUsuario}"></a>
+        <div class="dropdown-content">
+            <a th:if="${perfilUsuario == 'COMUM'}" th:href="@{/perfil}">Perfil</a>
+            <a th:if="${perfilUsuario == 'FUNCIONARIO'}" th:href="@{/paginaFuncionario}">Perfil</a>
+            <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/paginaAdm}">Perfil</a>
+            <a th:href="@{/logout}">Sair</a>
+        </div>
+    </div>
+    <a th:if="${nomeUsuario == null}" th:href="@{/login}">Login</a>
+</nav>
+
+<main>
+    <section class="services-section">
+        <h2>Conheça os Nossos Serviços</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>Clínica Geral</h3>
+                <p>Atendimento completo com exames e tratamentos preventivos para sua saúde bucal.</p>
+            </div>
+            <div class="service-card">
+                <h3>Endodontia</h3>
+                <p>Especializada em tratamento de canal para preservar dentes comprometidos.</p>
+            </div>
+            <div class="service-card">
+                <h3>Periodontia</h3>
+                <p>Tratamento de doenças da gengiva e tecidos de suporte dos dentes.</p>
+            </div>
+            <div class="service-card">
+                <h3>Cirurgia Odontológica</h3>
+                <p>Extrações e remoção de cistos com técnica e cuidado.</p>
+            </div>
+            <div class="service-card">
+                <h3>Próteses</h3>
+                <p>Próteses fixas ou removíveis para recuperar dentes perdidos.</p>
+            </div>
+            <div class="service-card">
+                <h3>Ortodontia</h3>
+                <p>Correção de alinhamento dentário e mordida com aparelhos ortodônticos.</p>
+            </div>
+            <div class="service-card">
+                <h3>Implantodontia</h3>
+                <p>Implantes dentários para substituir dentes perdidos com estabilidade.</p>
+            </div>
+            <div class="service-card">
+                <h3>Odontopediatria</h3>
+                <p>Atendimento odontológico infantil com foco na saúde bucal das crianças.</p>
+            </div>
+            <div class="service-card">
+                <h3>Estética Dental</h3>
+                <p>Clareamento, facetas e restaurações para um sorriso mais bonito.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>© 2025 Clínica Tenguam - Todos os direitos reservados</p>
+</footer>
+
+<script>
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+        window.location.reload();
+      }
+    });
+</script>
+</body>
+</html>

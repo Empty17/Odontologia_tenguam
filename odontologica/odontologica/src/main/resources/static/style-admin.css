@@ -1,0 +1,301 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header */
+header {
+  background: linear-gradient(to right, #1e3a8a, #3b82f6);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 a {
+  color: #fff;
+  font-size: 24px;
+  text-decoration: none;
+}
+
+header img.logo {
+  height: 80px;
+  width: auto;
+}
+
+/* Navegação */
+nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #e0f2f7;
+  padding: 10px 20px;
+  gap: 20px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #2b8cb9;
+  font-weight: 500;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+.user-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.user-dropdown .dropbtn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: #2b8cb9;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.user-dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  min-width: 120px;
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.user-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Main Content */
+main {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.employees-section, .appointments-section {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+h2 {
+  color: #2b8cb9;
+  margin-bottom: 15px;
+  font-size: 1.5em;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #e0f2f7;
+  color: #2b8cb9;
+}
+
+td form {
+  margin: 0;
+}
+
+td button {
+  background-color: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+td button:hover {
+  background-color: #dc2626;
+}
+
+.add-employee {
+  display: inline-block;
+  background-color: #3b82f6;
+  color: #fff;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.add-employee:hover {
+  background-color: #2563eb;
+}
+
+.btn-detalhes {
+  background-color: #6b7280;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-detalhes:hover {
+  background-color: #4b5563;
+}
+
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 1000; /* Fica acima de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total da tela */
+    height: 100%; /* Altura total da tela */
+    overflow: auto; /* Adiciona rolagem se necessário */
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro com transparência */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Centraliza o modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; /* Largura do modal */
+    max-width: 600px; /* Largura máxima do modal */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+    overflow-y: auto; /* Rolagem vertical se necessário */
+    max-height: 80%; /* Altura máxima do modal */
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.modal h2 {
+  color: #2b8cb9;
+  margin-bottom: 15px;
+}
+
+.modal p {
+  margin: 10px 0;
+  font-size: 1em;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #e0e0e0;
+  color: #666;
+  width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  header h1 a {
+    font-size: 20px;
+  }
+
+  header img.logo {
+    margin-top: 10px;
+    height: 30px;
+  }
+
+  nav {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  nav a, .user-dropdown {
+    margin: 5px 0;
+  }
+
+  .employees-section, .appointments-section {
+    margin-bottom: 20px;
+    padding: 15px;
+  }
+
+  table {
+    font-size: 0.9em;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  .modal-content {
+    margin: 20% auto;
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 a {
+    font-size: 18px;
+  }
+
+  .header-logo {
+    height: 25px;
+  }
+
+  .employees-section h2, .appointments-section h2 {
+    font-size: 1.3em;
+  }
+
+  table {
+    font-size: 0.85em;
+  }
+
+  .add-employee {
+    padding: 8px 12px;
+  }
+}

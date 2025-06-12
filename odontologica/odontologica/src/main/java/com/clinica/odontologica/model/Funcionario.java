@@ -8,8 +8,8 @@ import java.time.LocalDate;
 public class Funcionario {
 
     @Id
-    @Column(length = 14, unique = true, nullable = false) // Garantir que o CPF seja único e não nulo
-    private String cpf; // O CPF é o identificador único da entidade
+    @Column(length = 14)
+    private String cpf;
 
     private String nome;
     private String email;
@@ -21,6 +21,10 @@ public class Funcionario {
 
     private String telefone;
 
+    @Lob
+@Column(name = "foto")
+private byte[] foto;
+
     @Column(name = "data_admissao")
     private LocalDate dataAdmissao;
 
@@ -28,7 +32,6 @@ public class Funcionario {
     private String especialidade;
 
     // Getters e Setters
-
     public String getCpf() {
         return cpf;
     }
@@ -108,4 +111,12 @@ public class Funcionario {
     public void setEspecialidade(String especialidade) {
         this.especialidade = especialidade;
     }
+
+    public byte[] getFoto() {
+    return foto;
+}
+
+public void setFoto(byte[] foto) {
+    this.foto = foto;
+}
 }

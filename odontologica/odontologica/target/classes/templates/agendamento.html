@@ -1,21 +1,118 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agendamento de Consulta</title>
 
-    <!-- CSS externo -->
-    <link href="estilos.css" rel="stylesheet" />
-
-    <!-- FullCalendar CSS -->
+    <!-- CSS do FullCalendar -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet" />
 
-    <!-- FullCalendar JS -->
+    <!-- JS do FullCalendar -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/locale/pt-br.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/images/Fundo-De-Tela.png');
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        #calendar {
+            margin-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        input, select {
+            padding: 10px;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .horarios li {
+            background: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .horarios li:hover,
+        .horarios li.selecionado {
+            background: #0a4a80;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -23,89 +120,165 @@
         <div id="calendar"></div>
     </div>
 
+    <!-- Modal -->
     <div id="agendamentoModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h3>Confirmar Agendamento</h3>
             <p>Você deseja marcar uma consulta para o dia <strong id="selectedDate"></strong>?</p>
+
+            <div class="form-container">
+                <label for="problema">Problema Odontológico</label>
+                <select id="problema" required>
+                    <option value="">Selecione um problema</option>
+                    <option>Clínica Geral</option>
+                    <option>Endodontia</option>
+                    <option>Periodontia</option>
+                    <option>Cirurgia Odontológica</option>
+                    <option>Próteses</option>
+                    <option>Ortodontia</option>
+                    <option>Implantodontia</option>
+                    <option>Odontopediatria</option>
+                    <option>Estética Dental</option>
+                </select>
+            </div>
+
             <div class="form-container">
                 <label for="medico">Médico</label>
                 <select id="medico" required>
-                    <option value="">Carregando médicos...</option>
+                    <option value="">Escolha o Médico</option>
                 </select>
 
-                <label for="hora">Hora de Agendamento</label>
-                <input type="time" id="hora" required/>
+                <div class="form-group">
+                    <label>Selecione o Horário do Agendamento</label>
+                    <div class="horarios">
+                        <ul>
+                            <li onclick="selecionarHorario(this)">09:00</li>
+                            <li onclick="selecionarHorario(this)">11:00</li>
+                            <li onclick="selecionarHorario(this)">13:00</li>
+                            <li onclick="selecionarHorario(this)">15:00</li>
+                            <li onclick="selecionarHorario(this)">17:00</li>
+                            <li onclick="selecionarHorario(this)">19:00</li>
+                        </ul>
+                    </div>
+                </div>
 
                 <button id="confirmAgendamento">Confirmar Agendamento</button>
             </div>
         </div>
     </div>
 
+    <input type="hidden" id="horarioSelecionado" name="horarioSelecionado" required />
+
     <script>
-        $(document).ready(function () {
+        function selecionarHorario(elemento) {
+            document.querySelectorAll('.horarios li').forEach(el => el.classList.remove('selecionado'));
+            elemento.classList.add('selecionado');
+            document.getElementById('horarioSelecionado').value = elemento.textContent;
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            // 0) Busca o CPF do usuário logado de forma SÍNCRONA
+            var cpfUsuario = null;
+            $.ajax({
+                url: '/sessao/usuario',
+                type: 'GET',
+                async: false, // <— importante: faz a chamada de forma bloqueante
+                success: function(cpf) {
+                    cpfUsuario = cpf;
+                }
+            });
+
+            // 1) Carrega o calendário
             $('#calendar').fullCalendar({
                 locale: 'pt-br',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
+                    right: 'month'
                 },
                 events: '/agendamentos',
-                editable: true,
-                droppable: true,
-                dayClick: function (date) {
-                    const dataSelecionada = date.format('YYYY-MM-DD');
-                    $('#selectedDate').text(dataSelecionada);
-                    carregarMedicos();
+                dayClick: function(date) {
+                    // Verifica se a data não é no passado
+                    if (date.isBefore(moment(), 'day')) {
+                        alert("Não é possível agendar uma consulta no passado.");
+                        return;
+                    }
+                    $('#selectedDate').text(date.format('YYYY-MM-DD'));
                     $('#agendamentoModal').fadeIn();
                 }
             });
 
-            $('.close').click(function () {
+            // 2) Fecha o modal
+            $('.close').click(function() {
                 $('#agendamentoModal').fadeOut();
             });
 
-            $('#confirmAgendamento').click(function () {
-                const agendamentoData = {
-                    medicoCpf: $('#medico').val(),
-                    data_agendamento: $('#selectedDate').text() + ' ' + $('#hora').val()
+            // 3) Carrega os médicos dinamicamente
+            $.get("/agendamentos/medicos", function(medicos) {
+                $('#medico').empty().append('<option value="">Escolha o Médico</option>');
+                medicos.forEach(function(medico) {
+                    $('#medico').append(
+                        $('<option>', {
+                            value: medico.cpf,
+                            text: medico.nome
+                        })
+                    );
+                });
+            });
+
+            // 4) Confirma o agendamento usando cpfUsuario carregado
+            $('#confirmAgendamento').click(function() {
+                const data = $('#selectedDate').text();
+                const hora = $('#horarioSelecionado').val();
+                const medico = $('#medico').val();
+                const problema = $('#problema').val();
+
+                if (!data || !hora || !medico || !problema) {
+                    alert("Preencha todos os campos!");
+                    return;
+                }
+                if (!cpfUsuario) {
+                    alert("Usuário não identificado. Refaça o login.");
+                    return;
+                }
+
+                const agendamento = {
+                    medico: { cpf: medico },
+                    cpfUsuario: cpfUsuario, // <— aqui!
+                    dataAgendamento: data + 'T' + hora + ':00',
+                    statusAgendamento: "Pendente",
+                    problemaOdontologico: problema
                 };
 
                 $.ajax({
                     url: '/agendamentos',
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify(agendamentoData),
-                    success: function () {
+                    data: JSON.stringify(agendamento),
+                    success: function() {
                         alert('Agendamento realizado com sucesso!');
-                        $('#calendar').fullCalendar('refetchEvents');
-                        $('#agendamentoModal').fadeOut();
+                        window.location.href = "/perfil"; // Redireciona para o perfil
                     },
-                    error: function () {
-                        alert('Erro ao agendar. Tente novamente.');
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        // Exibe a mensagem de erro retornada pelo servidor
+                        alert(xhr.responseText || 'Erro ao realizar agendamento. Verifique os dados ou se o médico e o usuário existem.');
                     }
                 });
             });
+        });
+    </script>
 
-            function carregarMedicos() {
-                $.ajax({
-                    url: '/api/medicos',
-                    method: 'GET',
-                    success: function (medicos) {
-                        const select = $('#medico');
-                        select.empty();
-                        select.append('<option value="">Escolha o Médico</option>');
-                        medicos.forEach(function (medico) {
-                            select.append(`<option value="${medico.cpf}">Dr(a). ${medico.nome}</option>`);
-                        });
-                    },
-                    error: function () {
-                        alert('Erro ao carregar médicos.');
-                    }
-                });
+    <script>
+        window.addEventListener("pageshow", function(event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+                window.location.reload();
             }
         });
     </script>
+
 </body>
 </html>

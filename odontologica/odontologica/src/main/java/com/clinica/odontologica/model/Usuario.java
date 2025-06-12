@@ -19,6 +19,10 @@ public class Usuario {
     @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
 
+    @Lob
+    @Column(name = "foto_perfil")
+    private byte[] fotoPerfil;
+
     private String telefone;
 
     // Getters e Setters
@@ -78,4 +82,12 @@ public class Usuario {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+    public byte[] getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(byte[] fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }   
 }

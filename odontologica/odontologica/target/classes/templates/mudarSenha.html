@@ -1,29 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mudar Senha - Clínica Tenguam</title>
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style-mudar-senha.css">
 </head>
 <body>
-  <header>
-    <h1><a href="/index" id="voltaMenu">Mudar Senha - Clínica Tenguam</a></h1>
-  </header>
+<header>
+  <h1><a href="/index" id="voltaMenu">Mudar Senha - Clínica Tenguam</a></h1>
+  <img src="/images/Logo-Tenguam.png" alt="Logo Clínica Tenguam" class="logo">
+</header>
 
-  <section class="content">
-    <form th:action="@{/salvarNovaSenha}" method="post">
-      <input type="hidden" th:name="email" th:value="${email}"/>
-      <label for="novaSenha">Nova Senha:</label><br>
-      <input type="password" id="novaSenha" th:name="novaSenha" required><br><br>
-      <button type="submit">Salvar Nova Senha</button>
-    </form>
+<section class="content">
+  <form th:action="@{/salvarNovaSenha}" method="post">
+    <input type="hidden" th:name="email" th:value="${email}"/>
+    <label for="novaSenha">Nova Senha:</label>
+    <input type="password" id="novaSenha" th:name="novaSenha" required>
+    <button type="submit">Salvar Nova Senha</button>
+  </form>
 
-    <div th:if="${erro}" style="color: red;" th:text="${erro}"></div>
-  </section>
+  <div th:if="${erro}" th:text="${erro}" class="error-message"></div>
+</section>
 
-  <footer>
-    <p>Clínica Tenguam © 2025</p>
-  </footer>
+<footer>
+  <p>Clínica Tenguam © 2025</p>
+</footer>
+
+<script>
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+      window.location.reload();
+    }
+  });
+</script>
 </body>
 </html>

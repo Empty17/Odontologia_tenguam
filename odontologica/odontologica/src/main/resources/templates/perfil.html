@@ -1,56 +1,144 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil do Usuário</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Usuário</title>
+    <link rel="stylesheet" href="style-perfil.css">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
 </head>
 <body>
-
 <header>
-  <h1>Perfil do Usuário</h1>
+    <a href="/index">
+        <h1>Clínica Tenguam</h1>
+    </a>
+    <p>Seu sorriso, nossa missão!</p>
+    <img src="/images/Logo-Tenguam.png" alt="Logo Clínica Tenguam" class="header-logo">
 </header>
 
-<div class="container">
-  <div class="perfil-info">
-    <h2>Bem-vindo, <span th:text="${usuario.nome}">Nome do Usuário</span></h2>
-    <p><strong>CPF:</strong> <span th:text="${usuario.cpf}">000.000.000-00</span></p>
-    <p><strong>E-mail:</strong> <span th:text="${usuario.email}">usuario@email.com</span></p>
-    <p><strong>Telefone:</strong> <span th:text="${usuario.telefone}">(00) 00000-0000</span></p>
-
-    <!-- Formulário para exclusão de conta -->
-    <form action="/usuario/excluir" method="post" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
-      <!-- Passando o CPF como a chave primária -->
-      <input type="hidden" name="cpf" th:value="${usuario.cpf}" />
-      <button type="submit" class="btn-excluir">Excluir Conta</button>
-    </form>
-
-    <!-- Histórico de Consultas -->
-    <div class="consultas">
-      <h3>Histórico de Consultas</h3>
-      <div th:if="${#lists.isEmpty(consultas)}">
-        <p>Nenhuma consulta registrada.</p>
-      </div>
-      <div th:each="consulta : ${consultas}">
-        <hr>
-        <p><strong>Data da Consulta:</strong> <span th:text="${#dates.format(consulta.dataConsulta, 'dd/MM/yyyy HH:mm')}">00/00/0000 00:00</span></p>
-        <p><strong>Diagnóstico:</strong> <span th:text="${consulta.diagnostico}">Texto do diagnóstico</span></p>
-        <p><strong>Histórico:</strong> <span th:text="${consulta.historico}">Texto do histórico</span></p>
-        <p><strong>Tratamento:</strong> <span th:text="${consulta.tratamento}">Texto do tratamento</span></p>
-      </div>
+<nav>
+    <a href="/sobrenos">Sobre Nós</a>
+    <a href="/servicos">Serviços</a>
+    <a href="/contato">Contato</a>
+    <div th:if="${nomeUsuario != null}" class="user-dropdown">
+        <a class="dropbtn" th:text="${nomeUsuario}"></a>
+        <div class="dropdown-content">
+            <a th:if="${perfilUsuario == 'COMUM'}" th:href="@{/perfil}">Perfil</a>
+            <a th:if="${perfilUsuario == 'FUNCIONARIO'}" th:href="@{/paginaFuncionario}">Perfil</a>
+            <a th:if="${perfilUsuario == 'ADMIN'}" th:href="@{/paginaAdm}">Perfil</a>
+            <a th:href="@{/logout}">Sair</a>
+        </div>
     </div>
-  </div>
+    <a th:if="${nomeUsuario == null}" th:href="@{/login}">Login</a>
+</nav>
+
+<div class="container">
+    <div class="perfil-info">
+        <h2>Bem-vindo, <span th:text="${usuario.nome}">Nome do Usuário</span></h2>
+        <div class="foto-perfil">
+            <div class="foto-frame">
+                <img th:src="@{'/usuario/foto/' + ${usuario.cpf}}" alt="Foto de Perfil">
+            </div>
+        </div>
+        <form action="/usuario/foto/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="foto" accept="image/*" required>
+            <input type="hidden" name="cpf" th:value="${usuario.cpf}">
+            <button type="submit" class="btn">Atualizar Foto</button>
+        </form>
+        <form action="/usuario/foto/remover" method="post">
+            <input type="hidden" name="cpf" th:value="${usuario.cpf}">
+            <button type="submit" class="btn btn-secondary">Remover Foto</button>
+        </form>
+        <p><strong>CPF:</strong> <span th:text="${usuario.cpf}">000.000.000-00</span></p>
+        <p><strong>E-mail:</strong> <span th:text="${usuario.email}">usuario@email.com</span></p>
+        <p><strong>Telefone:</strong> <span th:text="${usuario.telefone}">(00) 00000-0000</span></p>
+        <form th:action="@{/excluir}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
+            <input type="hidden" th:name="cpf" th:value="${usuario.cpf}">
+            <button type="submit" class="btn btn-excluir">Excluir Conta</button>
+        </form>
+    </div>
 </div>
 
-<!-- Agendamento de Consultas -->
 <div class="consultas">
-  <h3>Agendamento de Consultas</h3>
-  <p>Deseja marcar uma nova consulta?</p>
-  <form action="/agendamento" method="get">
-    <button type="submit" class="btn-agendar">Agendar Consulta</button>
-  </form>
+    <h3>Minhas Consultas</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>Data</th>
+            <th>Problema</th>
+            <th>Status</th>
+            <th>Médico</th>
+            <th>Detalhes</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="consulta : ${consultas}">
+            <td th:text="${consulta.data}"></td>
+            <td th:text="${consulta.problema}"></td>
+            <td th:text="${consulta.status}"></td>
+            <td th:text="${consulta.medico}"></td>
+            <td>
+                <button class="btn btn-detalhes"
+                        th:attr="data-id=${consulta['idAgendamento']},
+                          data-diagnostico=${consulta['diagnostico']},
+                          data-historico=${consulta['historico']},
+                          data-tratamento=${consulta['tratamento']}">Detalhes</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
+<div id="modalDetalhes" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">×</span>
+        <h2>Detalhes do Agendamento</h2>
+        <p><strong>Diagnóstico:</strong> <span id="modalDiagnostico"></span></p>
+        <p><strong>Histórico:</strong> <span id="modalHistorico"></span></p>
+        <p><strong>Tratamento:</strong> <span id="modalTratamento"></span></p>
+    </div>
+</div>
+
+<div class="consultas">
+    <h3>Agendar Consulta</h3>
+    <p>Deseja marcar uma nova consulta?</p>
+    <form action="/agendamento" method="get">
+        <button type="submit" class="btn btn-agendar">Agendar Consulta</button>
+    </form>
+</div>
+
+<script>
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+        window.location.reload();
+      }
+    });
+
+    var modal = document.getElementById("modalDetalhes");
+    var closeBtn = document.getElementsByClassName("close-btn")[0];
+    var detalhesBtns = document.querySelectorAll('.btn-detalhes');
+
+    detalhesBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.getElementById("modalDiagnostico").innerText = this.getAttribute("data-diagnostico");
+        document.getElementById("modalHistorico").innerText = this.getAttribute("data-historico");
+        document.getElementById("modalTratamento").innerText = this.getAttribute("data-tratamento");
+        modal.style.display = "block";
+      });
+    });
+
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+</script>
 </body>
 </html>

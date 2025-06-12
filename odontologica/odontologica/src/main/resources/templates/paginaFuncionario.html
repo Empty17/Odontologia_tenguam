@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil do Funcionário - Clínica Tenguam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style-perfil-funcionario.css">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+</head>
+<body>
+<header>
+  <h1><a href="/paginaFuncionario">Perfil do Funcionário - Clínica Tenguam</a></h1>
+  <img src="/images/Logo-Tenguam.png" alt="Logo Clínica Tenguam" class="logo">
+</header>
+
+<nav>
+  <div th:if="${funcionario != null}" class="user-dropdown">
+    <a class="dropbtn" th:text="${funcionario.nome}">Funcionário</a>
+    <div class="dropdown-content">
+      <a th:href="@{/paginaFuncionario}">Perfil</a>
+      <a th:href="@{/logout}">Sair</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="profile-section">
+    <h2>Bem-vindo, <span th:text="${funcionario.nome}">Nome do Funcionário</span></h2>
+    <div class="profile-info">
+      <div class="foto-perfil">
+        <img th:src="@{'/funcionario/foto/' + ${funcionario.cpf}}" alt="Foto de Perfil" class="profile-img">
+      </div>
+      <div class="photo-actions">
+        <form action="/funcionario/foto/upload" method="post" enctype="multipart/form-data">
+          <input type="file" name="foto" accept="image/*" required>
+          <input type="hidden" name="cpf" th:value="${funcionario.cpf}">
+          <button type="submit">Atualizar Foto</button>
+        </form>
+        <form action="/funcionario/foto/remover" method="post">
+          <input type="hidden" name="cpf" th:value="${funcionario.cpf}">
+          <button type="submit">Remover Foto</button>
+        </form>
+      </div>
+      <div class="details">
+        <p><strong>CPF:</strong> <span th:text="${funcionario.cpf}">000.000.000-00</span></p>
+        <p><strong>E-mail:</strong> <span th:text="${funcionario.email}">funcionario@email.com</span></p>
+        <p><strong>Telefone:</strong> <span th:text="${funcionario.telefone}">(00) 00000-0000</span></p>
+        <p><strong>Data de Admissão:</strong> <span th:text="${dataAdmissaoFormatada}">01/01/2020</span></p>
+        <form action="/funcionario/excluir" method="post" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
+          <input type="hidden" name="cpf" th:value="${funcionario.cpf}">
+          <button type="submit" class="btn-excluir">Excluir Conta</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="appointments-section">
+    <h2>Agendamentos</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Data</th>
+        <th>Problema</th>
+        <th>Status</th>
+        <th>Paciente</th>
+        <th>Ações</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="agendamento : ${agendamentos}">
+        <td th:text="${#temporals.format(agendamento.dataAgendamento, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${agendamento.problemaOdontologico}"></td>
+        <td th:text="${agendamento.statusAgendamento}"></td>
+        <td th:text="${agendamento.usuario.nome}"></td>
+        <td>
+          <button type="button" th:attr="data-id=${agendamento.idAgendamento}" onclick="abrirModal(this)">Consultar</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<!-- Modal -->
+<div id="modalConsulta" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="fecharModal()">×</span>
+    <h3>Consulta do Agendamento</h3>
+    <form id="formConsulta" method="post" action="/agendamentos/salvarConsulta">
+      <input type="hidden" name="idAgendamento" id="idAgendamento">
+      <label for="diagnostico">Diagnóstico:</label>
+      <textarea name="diagnostico" id="diagnostico" rows="3" required></textarea>
+      <label for="historico">Histórico:</label>
+      <textarea name="historico" id="historico" rows="3" required></textarea>
+      <label for="tratamento">Tratamento:</label>
+      <textarea name="tratamento" id="tratamento" rows="3" required></textarea>
+      <button type="submit">Salvar</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>Clínica Tenguam © 2025</p>
+</footer>
+
+<script>
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted || (window.performance && window.performance.getEntriesByType("navigation")[0].type === "back_forward")) {
+      window.location.reload();
+    }
+  });
+
+  function abrirModal(button) {
+    const id = button.getAttribute("data-id");
+    document.getElementById("idAgendamento").value = id;
+    document.getElementById("modalConsulta").style.display = "block";
+  }
+
+  function fecharModal() {
+    document.getElementById("modalConsulta").style.display = "none";
+  }
+
+  document.getElementById("formConsulta").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const form = document.getElementById("formConsulta");
+    const formData = new FormData(form);
+    fetch(form.action, {
+      method: "POST",
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = "/paginaFuncionario";
+      } else {
+        alert("Erro ao salvar consulta.");
+      }
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+      alert("Erro ao salvar consulta.");
+    });
+  });
+</script>
+</body>
+</html>/
